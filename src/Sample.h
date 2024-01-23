@@ -1,0 +1,73 @@
+#pragma once
+
+#include <fstream>
+#include <iostream>
+#include <string.h>
+#include <mutex>
+#include <chrono>
+
+#include "Transport.h"
+
+using namespace std::chrono;
+
+enum openType{
+    FILE_READ,
+    FILE_WRITE
+};
+
+typedef struct header_file
+{
+    char chunk_id[4];
+    int chunk_size;
+    char format[4]; //16 bytes
+
+    char subchunk1_id[4];
+    int subchunk1_size;
+    short int audio_format;
+    short int num_channels;
+    int sample_rate;			// sample_rate denotes the sampling rate.
+    int byte_rate;
+    short int block_align;
+    short int bits_per_sample; //36 bytes
+} header;
+
+typedef struct header_file* header_p;
+
+class Sample{
+
+    private: 
+
+        std::string m_filePath;
+        FILE * m_file;
+
+        int m_infileSize;
+        int m_bytesRead = 0;
+
+        //for file read
+        bool m_dataTagFound = false;
+
+        unsigned int m_lengSamps;
+        short int * m_audioData;
+
+        std::mutex m_audioDataMutex;
+        int m_pointInAudio = 0;
+        short int * m_currentBuffer;
+        size_t m_currentBufSize = 0;
+
+        std::mutex m_timeMutex;
+        high_resolution_clock::time_point m_lastSampleBlockTime;
+
+    public:
+
+        Sample(std::string path);
+        ~Sample();
+
+        bool eof = false;
+
+        bool active = false;
+
+        void playSample(short int * transportAudioBuff, unsigned int writePointer, unsigned int audioDataLeng);
+
+        int loadSample();
+
+};

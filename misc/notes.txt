@@ -1,0 +1,29 @@
+queuer-controlls state
+
+servers holds state and relays updates
+
+player takes state and controlls transport along with samples
+
+
+channels array layout
+
+2 values, in 8 channels, in 32 steps
+
+short int[32][8][2]
+
+cpp app layout
+
+main sets up classes
+
+net class handles incoming info and writes to the correct place
+
+audio manager handles pulse, writing output etc, contains audio channel classes
+
+audio channel class has instrument class, and processor classes for said instrument
+    adds audio info into output buffer pointer for pulse from audio manager
+    pointers to instrument and processor info created here which net needs to populate
+        flags also important here for writing from net class
+
+
+
+if there is a change to a positive value in the transport then reset sample's point in audio and 
