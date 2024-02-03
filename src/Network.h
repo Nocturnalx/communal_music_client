@@ -10,7 +10,7 @@ class controller_api
 {
     private:
         
-        bool m_running;
+        bool m_running = false;
         std::thread m_controllerThread;
 
         curlpp::Cleanup m_curlppCleaner;
@@ -18,7 +18,8 @@ class controller_api
 
         Transport * m_transport;
 
-        bool m_newSequence[4][16];
+        bool m_newSequenceStates[6][16];
+        int m_newSequenceNotes[6][16];
 
         void controllerLoop();
 

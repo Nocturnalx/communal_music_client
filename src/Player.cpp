@@ -1,18 +1,33 @@
 #include "Player.h"
 
+// #include <math.h>
+#include <iostream>
+#include <ostream>
+// #include <iterator>
+// #include <memory>
+// #include <chrono>
+
 Player::Player(unsigned int sampleRate, unsigned int leng_samps, unsigned int freq){
 
     m_sampleRate = sampleRate;
     m_lengSamps = leng_samps * sampleRate;
     m_periodSamples = sampleRate / freq;
 
-    //for samples in sampArr
-    for (int i = 0; i < m_channels; i++){
-        samplesState += m_sampleArr[i].loadSample();
+    //for drumSamples
+    for (int i = 0; i < m_drumSamples; i++){
+        samplesState += m_drumSampleArr[i].loadSample();
+    }
+    //for instrument samples
+    for (int i = 0; i < m_instrumentSamples; i++){
+        samplesState += m_instrumentSampleArr[i].loadSample();
     }
 
+    if (samplesState != 0){
+        std::cout << "not starting threads\n";
+        return;
+    }
+    
     //give sample pointers to transport
-
     if (m_controller.startController() != 0){
         std::cout << "error starting controller thread\n";
     }

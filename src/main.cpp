@@ -9,7 +9,7 @@ u_char channels = 1;
 u_char sampleSize = sizeof(short int);
 u_int bufferLength_msec = 100;
 
-int inputDevice = 0;
+// int inputDevice = 0;
 int outputDevice = 0;
 
 int outputDeviceIndex = 0;
@@ -29,6 +29,8 @@ void on_dev_sink(pa_context * c, const pa_sink_info *info, int eol, void * udata
         pa_threaded_mainloop_signal(mloop, 0);
         return; 
     }
+
+    std::cout << "sink: " << outputDeviceIndex << ": " << info->name << '\n';
 
     if (outputDeviceIndex == outputDevice){
 
@@ -146,9 +148,23 @@ void playback(pa_context * ctx){
     pa_stream_unref(stm);
 }
 
-int main(int, char**){
+void parseArgs(int argc, char **argv){
+
+    if (argc > 1){
+
+        if (strcmp(argv[1], "-d") == 0){
+            outputDevice = strtol(argv[2], nullptr, 0);
+
+            if (outputDevice < 0 || outputDevice > 20) outputDevice = 0;
+        }
+    }
+}
+
+int main(int argc, char **argv){
 
     std::cout << "starting\n";
+
+    parseArgs(argc, argv);
 
     // create/start loop and lock
     pa_threaded_mainloop_start(mloop);

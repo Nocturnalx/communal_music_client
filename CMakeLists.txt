@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.5.0)
 project(MusicClient VERSION 0.1.0 LANGUAGES C CXX)
 
 include(CTest)
@@ -8,6 +8,7 @@ set( project_sources
    src/main.cpp
    src/Player.cpp
    src/Sample.cpp
+   src/SampleTypes.cpp
    src/Transport.cpp
    src/Network.cpp
 )

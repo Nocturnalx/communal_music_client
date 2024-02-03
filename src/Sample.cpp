@@ -1,34 +1,51 @@
 #include "Sample.h"
+#include <filesystem>
+#include <iostream>
+#include <ostream>
 
 Sample::Sample(std::string path){
 
     m_filePath = path;
-
-    m_file = fopen(m_filePath.data(), "r");
 }
 
 Sample::~Sample(){
-    fclose(m_file);
+    if (m_fileExists){
 
-    if (m_dataTagFound){
-        delete [] m_audioData;
+        fclose(m_file);
+
+        //data tag found implies m_audioData was initialised
+        if (m_dataTagFound){
+            delete [] m_audioData;
+
+            std::cout << "freeing " << m_filePath << std::endl;
+        }
     }
 }
 
 int Sample::loadSample(){
 
-    //read untill the 'data' tag is found, then read data size
+    //check file exists before reading
+    if (!std::filesystem::exists(m_filePath)){
+        std::cout << m_filePath << " does not exist" << std::endl;
+        return 1;
+    }
 
+    //moved past check so file exists
+    m_fileExists = true;
+
+    //read untill the 'data' tag is found, then read data size
     char check_buff[1];
     char data_buff[4];
+
+    m_file = fopen(m_filePath.data(), "r");
 
     //checking for data tag
     for (int i = 0; i < 1500; i++){
         fread(check_buff, sizeof(char), 1, m_file);
         // fwrite(check_buff, 1, sizeof(char), outfile);
 
-        for (int i = 0; i < 3; i++){
-            data_buff[i] = data_buff[i + 1];
+        for (int n = 0; n < 3; n++){
+            data_buff[n] = data_buff[n + 1];
         }
 
         data_buff[3] = check_buff[0];
@@ -45,7 +62,7 @@ int Sample::loadSample(){
         fread(&m_infileSize, 1, sizeof(int), m_file);
         m_lengSamps = m_infileSize / sizeof(short int);
 
-        std::cout << "audio leng in samps: " << m_lengSamps << std::endl;
+        std::cout << m_filePath << " - leng in samps: " << m_lengSamps << std::endl;
 
         //create 
         m_audioData = new short int [m_lengSamps];
@@ -54,22 +71,16 @@ int Sample::loadSample(){
 
         return 0;
     } else {
-        std::cout << "err no data tag found for wav sample." << std::endl;
+        std::cout << "err no data tag found for wav sample: " << m_filePath << std::endl;
         
         return 1;
     }
 }
 
-void Sample::playSample(short int * transportAudioBuff, unsigned int writePointer, unsigned int audioDataLeng){
+void Sample::playSample(short int * transportAudioBuff, unsigned int writePointer, unsigned int bufferLeng){
+    std::cout << "Error, sample loaded using base sample class instead of type classes\n";
+}
 
-    m_pointInAudio = 0;
-
-    for (int i = 0; i < m_lengSamps; i++){
-
-        transportAudioBuff[writePointer] += m_audioData[m_pointInAudio];
-
-        writePointer = (writePointer + 1) % audioDataLeng; //192000 is transport audio buff size
-
-        m_pointInAudio++;
-    }
+void Sample::playSample(short int * transportAudioBuff, unsigned int writePointer, unsigned int bufferLeng, int note){
+    std::cout << "Error, sample loaded using base sample class instead of type classes\n";
 }

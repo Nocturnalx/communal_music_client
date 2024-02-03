@@ -1,12 +1,8 @@
 #pragma once
-
 #include <fstream>
-#include <iostream>
 #include <string.h>
 #include <mutex>
 #include <chrono>
-
-#include "Transport.h"
 
 using namespace std::chrono;
 
@@ -35,10 +31,11 @@ typedef struct header_file* header_p;
 
 class Sample{
 
-    private: 
+    protected: 
 
         std::string m_filePath;
         FILE * m_file;
+        bool m_fileExists = false;
 
         int m_infileSize;
         int m_bytesRead = 0;
@@ -46,7 +43,7 @@ class Sample{
         //for file read
         bool m_dataTagFound = false;
 
-        unsigned int m_lengSamps;
+        unsigned int m_lengSamps = 0; //wont break when forget to load sample, but also wont show error
         short int * m_audioData;
 
         std::mutex m_audioDataMutex;
@@ -57,6 +54,8 @@ class Sample{
         std::mutex m_timeMutex;
         high_resolution_clock::time_point m_lastSampleBlockTime;
 
+        float m_gain = 1.0;
+
     public:
 
         Sample(std::string path);
@@ -66,8 +65,9 @@ class Sample{
 
         bool active = false;
 
-        void playSample(short int * transportAudioBuff, unsigned int writePointer, unsigned int audioDataLeng);
-
         int loadSample();
 
+        virtual void playSample(short int * transportAudioBuff, unsigned int writePointer, unsigned int bufferLeng);
+        
+        virtual void playSample(short int * transportAudioBuff, unsigned int writePointer, unsigned int bufferLeng, int note);
 };
