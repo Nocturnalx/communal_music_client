@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Synth.h"
 
 // #include <math.h>
 #include <iostream>
@@ -10,17 +11,39 @@
 Player::Player(unsigned int sampleRate, unsigned int leng_samps, unsigned int freq){
 
     m_sampleRate = sampleRate;
-    m_lengSamps = leng_samps * sampleRate;
-    m_periodSamples = sampleRate / freq;
 
     //for drumSamples
     for (int i = 0; i < m_drumSamples; i++){
         samplesState += m_drumSampleArr[i].loadSample();
     }
     //for instrument samples
-    for (int i = 0; i < m_instrumentSamples; i++){
-        samplesState += m_instrumentSampleArr[i].loadSample();
-    }
+    // for (int i = 0; i < m_instrumentSamples; i++){
+    //     samplesState += m_instrumentSampleArr[i].loadSample();
+    // }
+
+    double bps = (double)m_bpm/ (60.0);
+    unsigned int divisionSamps = sampleRate / bps;
+
+    synthData bassData;
+    bassData.noteLength = divisionSamps;
+    bassData.playSaw = true;
+    bassData.sawGain = 0.75;
+    bassData.sinAttack = sampleRate / 8;
+    bassData.playTri = true;
+    bassData.triGain = 1.0;
+    bassData.triAttack = sampleRate / 32;
+
+    synthData melodyData;
+    melodyData.noteLength = divisionSamps;
+    melodyData.playSin = true;
+    melodyData.sinGain = 0.75;
+    melodyData.sawAttack = sampleRate / 64;
+    melodyData.playTri = true;
+    melodyData.triGain = 1.0;
+    melodyData.triAttack = sampleRate / 64;
+
+    m_synthArr[0].init(bassData);
+    m_synthArr[1].init(melodyData);
 
     if (samplesState != 0){
         std::cout << "not starting threads\n";
@@ -67,7 +90,7 @@ void Player::populateSamples(short int * bufferPtr, unsigned long num){
         m_currentStep = newStepNum;
     }
 
-    if(m_stepsPlayed > (32 * 16)){
+    if(m_stepsPlayed > (128 * 16)){
         eof = true;
     }
 }

@@ -13,7 +13,6 @@ class DrumSample : public Sample{
 class InstrumentSample : public Sample{
 
     private:
-        float m_gain = 0.125;
         int attackSamps = 44100 / 32;
 
     public:

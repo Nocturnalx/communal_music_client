@@ -43,16 +43,9 @@ class Sample{
         //for file read
         bool m_dataTagFound = false;
 
-        unsigned int m_lengSamps = 0; //wont break when forget to load sample, but also wont show error
+        unsigned int m_lengSamps = 0; // = 0 means it wont break when forget to load sample, but also wont show error
         short int * m_audioData;
-
-        std::mutex m_audioDataMutex;
         int m_pointInAudio = 0;
-        short int * m_currentBuffer;
-        size_t m_currentBufSize = 0;
-
-        std::mutex m_timeMutex;
-        high_resolution_clock::time_point m_lastSampleBlockTime;
 
         float m_gain = 1.0;
 

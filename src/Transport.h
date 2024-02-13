@@ -4,7 +4,7 @@
 #include <mutex>
 #include <chrono>
 
-
+#include "Synth.h"
 #include "SampleTypes.h"
 
 using namespace std::chrono;
@@ -58,7 +58,7 @@ class Transport{
         Step m_nextSequence[16]; //step array of the next sequence, gets updated by the controller
 
         DrumSample * m_drumSampleArr;
-        InstrumentSample * m_instrumentSampleArr;
+        Synth * m_synthArr;
 
         high_resolution_clock::time_point m_lastIncTime;
 
@@ -70,7 +70,7 @@ class Transport{
 
     public:
 
-        Transport(unsigned int bpm, DrumSample * drumSampleArr, unsigned int drumSamples, InstrumentSample * instrumentSampleArr, unsigned int instrumentSamples);
+        Transport(unsigned int bpm, DrumSample * drumSampleArr, unsigned int drumSamples, Synth * synthArr, unsigned int synths);
         ~Transport();
 
         unsigned int readPointer = 0;
@@ -81,7 +81,7 @@ class Transport{
         unsigned int stepCount = 16;
         //these get set in constructor
         unsigned int drumSamplesCount; //drum channel count
-        unsigned int instrumentSamplesCount;
+        unsigned int synthsCount;
         unsigned int totalChannelCount;
 
         //launch separate thread which increments point in sequence according to real time clock

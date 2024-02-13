@@ -99,7 +99,7 @@ void controller_api::updateSequence(){
 
     auto jsonNoteArray = jsonResponse["noteArray"];
 
-    if (jsonNoteArray.size() != m_transport->instrumentSamplesCount || jsonNoteArray[0].size() != m_transport->stepCount){
+    if (jsonNoteArray.size() != m_transport->synthsCount || jsonNoteArray[0].size() != m_transport->stepCount){
 
         std::cout << "incoming instrument channels: " << jsonNoteArray.size() << std::endl;
         std::cout << "incoming steps: " << jsonNoteArray[0].size() << std::endl;
@@ -113,6 +113,7 @@ void controller_api::updateSequence(){
     //do total for all samples and set states (change drumSamplesCount to totalCount when website is updated to 6 channels)
     for (int c = 0; c < m_transport->totalChannelCount; c++){
         for (int s = 0; s < m_transport->stepCount; s++){
+            
             m_newSequenceStates[c][s] = (jsonStateArray[c][s].get<int>() == 1); //get bool from int 1 or 0
 
             if (c >= m_transport->drumSamplesCount){

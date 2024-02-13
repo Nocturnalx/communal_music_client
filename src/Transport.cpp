@@ -5,7 +5,7 @@
 #include <iostream>
 
 //Transport definitions
-Transport::Transport(unsigned int bpm, DrumSample * drumSampleArr, unsigned int drumSamples, InstrumentSample * instrumentSampleArr, unsigned int instrumentSamples){
+Transport::Transport(unsigned int bpm, DrumSample * drumSampleArr, unsigned int drumSamples, Synth * synthArr, unsigned int synths){
 
     m_bpm = bpm;
     double bps = (double)bpm / 60.0;
@@ -17,10 +17,10 @@ Transport::Transport(unsigned int bpm, DrumSample * drumSampleArr, unsigned int 
     drumSamplesCount = drumSamples;
     m_drumSampleArr = drumSampleArr;
 
-    instrumentSamplesCount = instrumentSamples;
-    m_instrumentSampleArr = instrumentSampleArr;
+    synthsCount = synths;
+    m_synthArr = synthArr;
 
-    totalChannelCount = drumSamplesCount + instrumentSamplesCount;
+    totalChannelCount = drumSamplesCount + synthsCount;
 
     std::cout << "total channel count: " << totalChannelCount << std::endl;
 
@@ -114,7 +114,7 @@ void Transport::transportLoop(){
 
             for (int c = drumSamplesCount; c < totalChannelCount; c++){
                 if(m_stepArray[currentStep].getChannelState(c) == true){
-                    m_instrumentSampleArr[c - drumSamplesCount].playSample(audioData, m_writePointer, audioDataLeng, m_stepArray[currentStep].getChannelNote(c));
+                    m_synthArr[c - drumSamplesCount].play(audioData, m_writePointer, audioDataLeng, m_stepArray[currentStep].getChannelNote(c));
                 }
             }
 
