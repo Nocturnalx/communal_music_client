@@ -9,6 +9,7 @@ set( project_sources
    src/Player.cpp
    src/Sample.cpp
    src/SampleTypes.cpp
+   src/Synth.cpp
    src/Transport.cpp
    src/Network.cpp
 )
